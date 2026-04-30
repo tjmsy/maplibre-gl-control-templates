@@ -1,6 +1,5 @@
-import ButtonControlTemplate from '../src/BasicButtonControl.js';
-import ToggleTextareaControl from '../src/ToggleTextareaControl.js';
-import TogglePanelControl from '../src/TogglePanelControl.js';
+import ButtonControlTemplate from './controls/BasicButtonControl.js';
+import TogglePanelControl from './controls/TogglePanelControl.js';
 
 const map = new maplibregl.Map({
   container: 'map',
@@ -10,5 +9,4 @@ const map = new maplibregl.Map({
   hash: true,
 });
 map.addControl(new ButtonControlTemplate(), 'top-left');
-map.addControl(new ToggleTextareaControl(), 'top-left');
 map.addControl(new TogglePanelControl(), 'top-left');
