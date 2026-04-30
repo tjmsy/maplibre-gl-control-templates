@@ -11,6 +11,7 @@ Feedback and suggestions are welcome.
 
 [Demo](https://tjmsy.github.io/maplibre-gl-control-templates/)
 
+<img width="492" height="290" alt="image" src="https://github.com/user-attachments/assets/cd0df139-257a-4407-a7af-e0656cb46d1f" />
 
 ---
 
