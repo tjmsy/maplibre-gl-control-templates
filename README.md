@@ -22,8 +22,7 @@ It provides the following basic structure:
 
 ```javascript
 class CustomControl {
-    constructor(options = {}) {
-        this.options = options;
+    constructor() {
     }
 
     onAdd(map) {
@@ -41,6 +40,6 @@ You can extend this to add your desired functionality.
 ---
 
 ## License
-This project is licensed under [Unlicense](http://unlicense.org/).
+This project is licensed under the [Unlicense](http://unlicense.org/).
 
 This software has been released into the public domain, with copyright fully waived in all jurisdictions that recognize copyright laws. For more details, see the [LICENSE](./LICENSE) file.
