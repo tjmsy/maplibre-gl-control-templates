@@ -1,23 +1,37 @@
 class CustomControl {
-    constructor() {
-    }
+  constructor() {
+    this._onClick = this._onClick.bind(this);
+  }
 
-    onAdd(map) {
-        this.map = map;
-        this.container = document.createElement('div');
-        this.container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
-        this.container.innerHTML = `<button id="customControlButton">🔥</button>`;
-        this.container.querySelector('#customControlButton').addEventListener('click', () => {
-            alert('Button clicked!');
-        });
+  _onClick() {
+    alert("Button clicked!");
+  }
 
-        return this.container;
-    }
+  buildUI() {
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
 
-    onRemove() {
-        this.container = null;
-        this.map = null;
-    }
+    this.button = document.createElement("button");
+    this.button.textContent = "🔥";
+    this.button.addEventListener("click", this._onClick);
+
+    this.container.appendChild(this.button);
+  }
+
+  onAdd(map) {
+    this.map = map;
+    this.buildUI();
+    return this.container;
+  }
+
+  onRemove() {
+    this.button?.removeEventListener("click", this._onClick);
+    this.container?.remove();
+
+    this.button = undefined;
+    this.container = undefined;
+    this.map = undefined;
+  }
 }
 
 export default CustomControl;
