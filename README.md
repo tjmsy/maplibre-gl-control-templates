@@ -1,45 +1,51 @@
-# maplibre-gl-custom-control-template
+# maplibre-gl-control-templates
 
-This repository contains a simple template for creating custom controls in [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js/), based on my current understanding.  
-You are free to use it, but please note that there are no guarantees regarding its functionality or content. Feel free to adjust it as needed.
+This repository contains simple templates for creating custom controls in [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js/), based on my understanding.  
+Feel free to use and modify these templates as needed.  
+No guarantees on functionality or correctness.  
+Feedback and suggestions are welcome.
 
-I welcome any feedback or suggestions for improvement!
+---
+
+## Demo
+
+[Demo](https://tjmsy.github.io/maplibre-gl-control-templates/)
+
 
 ---
 
 ## Usage
 Clone this repository:
 ```
-git clone https://github.com/tjmsy/maplibre-gl-custom-control-template.git
-cd maplibre-gl-custom-control-template
+git clone https://github.com/tjmsy/maplibre-gl-control-templates.git
+cd maplibre-gl-control-templates
 ```
+
+Then copy a template from the `src/` directory and modify it as needed.
 
 ---
 
-## Code Overview
-The core implementation is in [src/CustomControlTemplate.js](./src/CustomControlTemplate.js).  
-It provides the following basic structure:
+## Basic Structure
+All controls follow the same pattern:
 
 ```javascript
 class CustomControl {
-    constructor() {
-    }
+  onAdd(map) {
+    // create DOM
+    // attach events
+    return this.container;
+  }
 
-    onAdd(map) {
-        // Logic for when the control is added to the map
-    }
-
-    onRemove() {
-        // Logic for when the control is removed from the map
-    }
+  onRemove() {
+    // remove events
+    // clean up DOM
+  }
 }
 ```
-
-You can extend this to add your desired functionality.
 
 ---
 
 ## License
 This project is licensed under the [Unlicense](http://unlicense.org/).
 
-This software has been released into the public domain, with copyright fully waived in all jurisdictions that recognize copyright laws. For more details, see the [LICENSE](./LICENSE) file.
+This software has been released into the public domain. See the [LICENSE](./LICENSE) file for details.
