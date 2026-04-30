@@ -1,4 +1,4 @@
-class CustomControl {
+class BasicButtonControl {
   constructor() {
     this._onClick = this._onClick.bind(this);
   }
@@ -34,4 +34,4 @@ class CustomControl {
   }
 }
 
-export default CustomControl;
+export default BasicButtonControl;
