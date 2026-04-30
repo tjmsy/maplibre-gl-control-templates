@@ -1,6 +1,8 @@
 # maplibre-gl-control-templates
 
 This repository contains simple templates for creating custom controls in [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js/), based on my understanding.  
+These templates focus on UI structure only and do not include map interaction logic.  
+
 Feel free to use and modify these templates as needed.  
 No guarantees on functionality or correctness.  
 Feedback and suggestions are welcome.
