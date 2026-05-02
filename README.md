@@ -24,7 +24,7 @@ git clone https://github.com/tjmsy/maplibre-gl-control-templates.git
 cd maplibre-gl-control-templates
 ```
 
-Then copy a template from the `src/` directory and modify it as needed.
+Then copy a template from the `src/` directory and modify it as needed.  
 Or just download individual files from the repository.
 
 
