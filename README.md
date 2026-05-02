@@ -25,6 +25,8 @@ cd maplibre-gl-control-templates
 ```
 
 Then copy a template from the `src/` directory and modify it as needed.
+Or just download individual files from the repository.
+
 
 ---
 
