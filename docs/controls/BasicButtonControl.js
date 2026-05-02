@@ -1,6 +1,11 @@
 class BasicButtonControl {
   constructor() {
+    // bind
     this._onClick = this._onClick.bind(this);
+
+    // DOM refs
+    this.container = null;
+    this.button = null;
   }
 
   // -------------------------
@@ -9,13 +14,15 @@ class BasicButtonControl {
 
   onAdd(map) {
     this.map = map;
-    this.buildUI();
+
+    this._createUI();
+    this._bindUIEvents();
+
     return this.container;
   }
 
   onRemove() {
-    this.button?.removeEventListener("click", this._onClick);
-    this.button = undefined;
+    this._unbindUIEvents();
 
     this.container?.remove();
     this.map = undefined;
@@ -30,18 +37,40 @@ class BasicButtonControl {
   }
 
   // -------------------------
-  // UI
+  // UI lifecycle
   // -------------------------
 
-  buildUI() {
+  _createUI() {
+    this._createContainer();
+    this._createButton();
+
+    this._assemble();
+  }
+
+  _bindUIEvents() {
+    this.button.addEventListener("click", this._onClick);
+  }
+
+  _unbindUIEvents() {
+    this.button?.removeEventListener("click", this._onClick);
+  }
+
+  _assemble() {
+    this.container.appendChild(this.button);
+  }
+
+  // -------------------------
+  // UI Parts
+  // -------------------------
+
+  _createContainer() {
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+  }
 
+  _createButton() {
     this.button = document.createElement("button");
     this.button.textContent = "🔥";
-    this.button.addEventListener("click", this._onClick);
-
-    this.container.appendChild(this.button);
   }
 }
 

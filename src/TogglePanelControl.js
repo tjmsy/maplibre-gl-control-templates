@@ -12,6 +12,7 @@ class TogglePanelControl {
     this.select = null;
     this.checkbox = null;
     this.okButton = null;
+    this.clearButton = null;
 
     // bind
     this._onToggle = this._onToggle.bind(this);
@@ -21,23 +22,21 @@ class TogglePanelControl {
   }
 
   // -------------------------
-  // MapLibre Lifecycle
+  // Lifecycle
   // -------------------------
 
   onAdd(map) {
     this.map = map;
 
-    this.buildUI();
+    this._createUI();
+    this._bindUIEvents();
+
     return this.container;
   }
 
   onRemove() {
     this._close();
-    document.removeEventListener("click", this._onDocumentClick);
-
-    this.toggleButton?.removeEventListener("click", this._onToggle);
-    this.okButton?.removeEventListener("click", this._onOkClick);
-    this.clearButton?.removeEventListener("click", this._onClearClick);
+    this._unbindUIEvents();
 
     this.container?.remove();
     this.map = undefined;
@@ -72,11 +71,32 @@ class TogglePanelControl {
   _onDocumentClick(e) {
     if (!this.isOpen) return;
 
-    if (this.container.contains(e.target) || this.panel.contains(e.target)) {
+    if (
+      this.container.contains(e.target) ||
+      this.panel.contains(e.target)
+    ) {
       return;
     }
 
     this._close();
+  }
+
+  // -------------------------
+  // Events (UI)
+  // -------------------------
+
+  _bindUIEvents() {
+    this.toggleButton.addEventListener("click", this._onToggle);
+    this.okButton.addEventListener("click", this._onOkClick);
+    this.clearButton.addEventListener("click", this._onClearClick);
+  }
+
+  _unbindUIEvents() {
+    this.toggleButton?.removeEventListener("click", this._onToggle);
+    this.okButton?.removeEventListener("click", this._onOkClick);
+    this.clearButton?.removeEventListener("click", this._onClearClick);
+
+    document.removeEventListener("click", this._onDocumentClick);
   }
 
   // -------------------------
@@ -85,7 +105,6 @@ class TogglePanelControl {
 
   _onOkClick() {
     const data = this.getValue();
-
     alert(JSON.stringify(data, null, 2));
   }
 
@@ -127,12 +146,7 @@ class TogglePanelControl {
   // UI
   // -------------------------
 
-  buildUI() {
-    this._createDOM();
-    this._bindEvents();
-  }
-
-  _createDOM() {
+  _createUI() {
     this._createContainer();
     this._createToggleButton();
     this._createPanel();
@@ -148,16 +162,11 @@ class TogglePanelControl {
   _assemble() {
     this.container.appendChild(this.toggleButton);
     this.container.appendChild(this.panel);
+
     this.panel.appendChild(this.textboxGroup);
     this.panel.appendChild(this.select);
     this.panel.appendChild(this.checkboxGroup);
     this.panel.appendChild(this.toolbar);
-  }
-
-  _bindEvents() {
-    this.toggleButton.addEventListener("click", this._onToggle);
-    this.okButton.addEventListener("click", this._onOkClick);
-    this.clearButton.addEventListener("click", this._onClearClick);
   }
 
   // -------------------------
@@ -168,6 +177,7 @@ class TogglePanelControl {
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
   }
+
   _createToggleButton() {
     this.toggleButton = document.createElement("button");
     this.toggleButton.textContent = "⚙️";

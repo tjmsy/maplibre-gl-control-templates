@@ -17,6 +17,7 @@ class BottomSheetControl {
     this.content = null;
     this.toolbar = null;
     this.textarea = null;
+    this.toggleButton = null;
     this.okButton = null;
     this.clearButton = null;
 
@@ -41,8 +42,9 @@ class BottomSheetControl {
   onAdd(map) {
     this.map = map;
 
-    this.buildUI();
-    this.map.on("resize", this._onResize);
+    this._createUI();
+    this._bindUIEvents();
+    this._bindMapEvents();
 
     return this.container;
   }
@@ -50,15 +52,8 @@ class BottomSheetControl {
   onRemove() {
     this._close();
 
-    this.toggleButton?.removeEventListener("click", this._onToggle);
-    this.okButton?.removeEventListener("click", this._onOkClick);
-    this.clearButton?.removeEventListener("click", this._onClearClick);
-
-    this.handle?.removeEventListener("mousedown", this._onDragStart);
-    document.removeEventListener("mousemove", this._onDragMove);
-    document.removeEventListener("mouseup", this._onDragEnd);
-
-    this.map?.off("resize", this._onResize);
+    this._unbindUIEvents();
+    this._unbindMapEvents();
 
     this.container?.remove();
     this.panel?.remove();
@@ -82,10 +77,8 @@ class BottomSheetControl {
     const container = this.map.getContainer();
     const height = this._getInitialHeight(container);
 
-    this.panel.style.height = `${height}px`;
-    container.style.marginBottom = `${height}px`;
-
-    this._syncPanelToMap();
+    this._applyHeight(height);
+    this._syncLayout();
     this.map.resize();
   }
 
@@ -94,10 +87,38 @@ class BottomSheetControl {
 
     this.isOpen = false;
 
-    this.panel.style.height = "0px";
-    this.map.getContainer().style.marginBottom = "0px";
+    this._applyHeight(0);
 
     this.map.resize();
+  }
+
+  _bindMapEvents() {
+    this.map.on("resize", this._onResize);
+  }
+
+  _unbindMapEvents() {
+    this.map?.off("resize", this._onResize);
+  }
+
+  // -------------------------
+  // UI Events
+  // -------------------------
+
+  _bindUIEvents() {
+    this.toggleButton.addEventListener("click", this._onToggle);
+    this.okButton.addEventListener("click", this._onOkClick);
+    this.clearButton.addEventListener("click", this._onClearClick);
+    this.handle.addEventListener("mousedown", this._onDragStart);
+  }
+
+  _unbindUIEvents() {
+    this.toggleButton?.removeEventListener("click", this._onToggle);
+    this.okButton?.removeEventListener("click", this._onOkClick);
+    this.clearButton?.removeEventListener("click", this._onClearClick);
+    this.handle?.removeEventListener("mousedown", this._onDragStart);
+
+    document.removeEventListener("mousemove", this._onDragMove);
+    document.removeEventListener("mouseup", this._onDragEnd);
   }
 
   // -------------------------
@@ -115,7 +136,7 @@ class BottomSheetControl {
 
   _onResize() {
     if (!this.isOpen) return;
-    this._syncPanelToMap();
+    this._syncLayout();
   }
 
   _onDragStart(e) {
@@ -134,10 +155,7 @@ class BottomSheetControl {
     const dy = this.startY - e.clientY;
     this._setHeightFromDrag(dy);
 
-    clearTimeout(this._resizeTimer);
-    this._resizeTimer = setTimeout(() => {
-      this.map.resize();
-    }, 16);
+    this.map.resize();
   }
 
   _onDragEnd() {
@@ -145,9 +163,6 @@ class BottomSheetControl {
 
     document.removeEventListener("mousemove", this._onDragMove);
     document.removeEventListener("mouseup", this._onDragEnd);
-
-    clearTimeout(this._resizeTimer);
-    this._resizeTimer = null;
   }
 
   // -------------------------
@@ -159,7 +174,7 @@ class BottomSheetControl {
     return rect.height * this.options.heightRate;
   }
 
-  _syncPanelToMap() {
+  _syncLayout() {
     const container = this.map.getContainer();
 
     this.panel.style.left = "0px";
@@ -209,12 +224,7 @@ class BottomSheetControl {
   // UI
   // -------------------------
 
-  buildUI() {
-    this._createDOM();
-    this._bindEvents();
-  }
-
-  _createDOM() {
+  _createUI() {
     this._createContainer();
     this._createToggleButton();
     this._createPanel();
@@ -241,13 +251,6 @@ class BottomSheetControl {
 
     this.toolbar.appendChild(this.okButton);
     this.toolbar.appendChild(this.clearButton);
-  }
-
-  _bindEvents() {
-    this.toggleButton.addEventListener("click", this._onToggle);
-    this.okButton.addEventListener("click", this._onOkClick);
-    this.clearButton.addEventListener("click", this._onClearClick);
-    this.handle.addEventListener("mousedown", this._onDragStart);
   }
 
   // -------------------------
