@@ -142,6 +142,10 @@ class TogglePanelControl {
     this._createCheckbox();
     this._createToolbar();
 
+    this._assemble();
+  }
+
+  _assemble() {
     this.container.appendChild(this.toggleButton);
     this.container.appendChild(this.panel);
     this.panel.appendChild(this.textboxGroup);
