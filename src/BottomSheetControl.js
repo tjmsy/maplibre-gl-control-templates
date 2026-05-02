@@ -40,9 +40,10 @@ class BottomSheetControl {
 
   onAdd(map) {
     this.map = map;
-    this.map.on("resize", this._onResize);
 
     this.buildUI();
+    this.map.on("resize", this._onResize);
+
     return this.container;
   }
 
