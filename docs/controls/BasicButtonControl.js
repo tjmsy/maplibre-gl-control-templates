@@ -15,11 +15,10 @@ class BasicButtonControl {
 
   onRemove() {
     this.button?.removeEventListener("click", this._onClick);
-    this.container?.remove();
-
     this.button = undefined;
-    this._container.remove();
-    this._map = undefined;
+
+    this.container?.remove();
+    this.map = undefined;
   }
 
   // -------------------------
