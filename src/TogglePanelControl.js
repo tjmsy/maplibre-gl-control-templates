@@ -33,54 +33,23 @@ class TogglePanelControl {
 
   onRemove() {
     this._close();
+    document.removeEventListener("click", this._onDocumentClick);
 
     this.toggleButton?.removeEventListener("click", this._onToggle);
     this.okButton?.removeEventListener("click", this._onOkClick);
     this.clearButton?.removeEventListener("click", this._onClearClick);
 
     this.container?.remove();
-
     this.map = undefined;
   }
 
   // -------------------------
-  // Event Handlers
+  // State control
   // -------------------------
 
   _onToggle() {
     this.isOpen ? this._close() : this._open();
   }
-
-  // close when clicking outside
-  _onDocumentClick(e) {
-    if (!this.isOpen) return;
-
-    if (this.container.contains(e.target) || this.panel.contains(e.target)) {
-      return;
-    }
-
-    this._close();
-  }
-
-  _onOkClick() {
-    const data = {
-      text: this.input.value,
-      option: this.select.value,
-      checked: this.checkbox.checked,
-    };
-
-    alert(JSON.stringify(data, null, 2));
-  }
-
-  _onClearClick() {
-    this.input.value = "";
-    this.select.value = "";
-    this.checkbox.checked = false;
-  }
-
-  // -------------------------
-  // Internal Helpers
-  // -------------------------
 
   _open() {
     if (this.isOpen) return;
@@ -100,6 +69,60 @@ class TogglePanelControl {
     document.removeEventListener("click", this._onDocumentClick);
   }
 
+  _onDocumentClick(e) {
+    if (!this.isOpen) return;
+
+    if (this.container.contains(e.target) || this.panel.contains(e.target)) {
+      return;
+    }
+
+    this._close();
+  }
+
+  // -------------------------
+  // Event Handlers
+  // -------------------------
+
+  _onOkClick() {
+    const data = this.getValue();
+
+    alert(JSON.stringify(data, null, 2));
+  }
+
+  _onClearClick() {
+    this.setValue({
+      text: "",
+      option: "",
+      checked: false,
+    });
+  }
+
+  // -------------------------
+  // Value Interface
+  // -------------------------
+
+  getValue() {
+    return {
+      text: this.input.value,
+      option: this.select.value,
+      checked: this.checkbox.checked,
+    };
+  }
+
+  setValue(value = {}) {
+    if (value.text !== undefined) {
+      this.input.value = value.text;
+    }
+
+    if (value.option !== undefined) {
+      this.select.value = value.option;
+    }
+
+    if (value.checked !== undefined) {
+      this.checkbox.checked = value.checked;
+    }
+  }
+
   // -------------------------
   // UI
   // -------------------------
@@ -110,16 +133,44 @@ class TogglePanelControl {
   }
 
   _createDOM() {
-    // container
+    this._createContainer();
+    this._createToggleButton();
+    this._createPanel();
+
+    this._createTextboxGroup();
+    this._createSelect();
+    this._createCheckbox();
+    this._createToolbar();
+
+    this.container.appendChild(this.toggleButton);
+    this.container.appendChild(this.panel);
+    this.panel.appendChild(this.textboxGroup);
+    this.panel.appendChild(this.select);
+    this.panel.appendChild(this.checkboxGroup);
+    this.panel.appendChild(this.toolbar);
+  }
+
+  _bindEvents() {
+    this.toggleButton.addEventListener("click", this._onToggle);
+    this.okButton.addEventListener("click", this._onOkClick);
+    this.clearButton.addEventListener("click", this._onClearClick);
+  }
+
+  // -------------------------
+  // UI Parts
+  // -------------------------
+
+  _createContainer() {
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-
-    // toggle button
+  }
+  _createToggleButton() {
     this.toggleButton = document.createElement("button");
     this.toggleButton.textContent = "⚙️";
     this.toggleButton.title = "Toggle panel";
+  }
 
-    // panel
+  _createPanel() {
     this.panel = document.createElement("div");
 
     Object.assign(this.panel.style, {
@@ -129,27 +180,12 @@ class TogglePanelControl {
       minWidth: "200px",
       boxSizing: "border-box",
     });
-
-    // parts
-    const textRow = this._createTextRow();
-    const select = this._createSelect();
-    const checkbox = this._createCheckbox();
-    const toolbar = this._createToolbar();
-
-    // assemble
-    this.panel.appendChild(textRow);
-    this.panel.appendChild(select);
-    this.panel.appendChild(checkbox);
-    this.panel.appendChild(toolbar);
-
-    this.container.appendChild(this.toggleButton);
-    this.container.appendChild(this.panel);
   }
 
-  _createTextRow() {
-    const textRow = document.createElement("div");
+  _createTextboxGroup() {
+    this.textboxGroup = document.createElement("div");
 
-    Object.assign(textRow.style, {
+    Object.assign(this.textboxGroup.style, {
       display: "flex",
       alignItems: "center",
       gap: "8px",
@@ -165,10 +201,8 @@ class TogglePanelControl {
     this.input.placeholder = "Type here...";
     this.input.style.flex = "1";
 
-    textRow.appendChild(label);
-    textRow.appendChild(this.input);
-
-    return textRow;
+    this.textboxGroup.appendChild(label);
+    this.textboxGroup.appendChild(this.input);
   }
 
   _createSelect() {
@@ -187,28 +221,23 @@ class TogglePanelControl {
       option.textContent = opt;
       this.select.appendChild(option);
     });
-
-    return this.select;
   }
 
   _createCheckbox() {
-    const wrapper = document.createElement("label");
-    wrapper.style.display = "block";
+    this.checkboxGroup = document.createElement("label");
+    this.checkboxGroup.style.display = "block";
 
     this.checkbox = document.createElement("input");
     this.checkbox.type = "checkbox";
 
-    const labelText = document.createTextNode(" Checkbox");
-    wrapper.appendChild(this.checkbox);
-    wrapper.append(labelText);
-
-    return wrapper;
+    this.checkboxGroup.appendChild(this.checkbox);
+    this.checkboxGroup.append(" Checkbox");
   }
 
   _createToolbar() {
-    const toolbar = document.createElement("div");
+    this.toolbar = document.createElement("div");
 
-    Object.assign(toolbar.style, {
+    Object.assign(this.toolbar.style, {
       marginTop: "8px",
       display: "flex",
       gap: "4px",
@@ -220,16 +249,8 @@ class TogglePanelControl {
     this.clearButton = document.createElement("button");
     this.clearButton.textContent = "Clear";
 
-    toolbar.appendChild(this.okButton);
-    toolbar.appendChild(this.clearButton);
-
-    return toolbar;
-  }
-
-  _bindEvents() {
-    this.toggleButton.addEventListener("click", this._onToggle);
-    this.okButton.addEventListener("click", this._onOkClick);
-    this.clearButton.addEventListener("click", this._onClearClick);
+    this.toolbar.appendChild(this.okButton);
+    this.toolbar.appendChild(this.clearButton);
   }
 }
 

@@ -39,9 +39,7 @@ class TogglePanelControl {
     this.okButton?.removeEventListener("click", this._onOkClick);
     this.clearButton?.removeEventListener("click", this._onClearClick);
 
-
     this.container?.remove();
-
     this.map = undefined;
   }
 

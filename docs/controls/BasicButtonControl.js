@@ -3,20 +3,9 @@ class BasicButtonControl {
     this._onClick = this._onClick.bind(this);
   }
 
-  _onClick() {
-    alert("Button clicked!");
-  }
-
-  buildUI() {
-    this.container = document.createElement("div");
-    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-
-    this.button = document.createElement("button");
-    this.button.textContent = "🔥";
-    this.button.addEventListener("click", this._onClick);
-
-    this.container.appendChild(this.button);
-  }
+  // -------------------------
+  // MapLibre Lifecycle
+  // -------------------------
 
   onAdd(map) {
     this.map = map;
@@ -29,8 +18,31 @@ class BasicButtonControl {
     this.container?.remove();
 
     this.button = undefined;
-    this.container = undefined;
-    this.map = undefined;
+    this._container.remove();
+    this._map = undefined;
+  }
+
+  // -------------------------
+  // Event Handlers
+  // -------------------------
+
+  _onClick() {
+    alert("Button clicked!");
+  }
+
+  // -------------------------
+  // UI
+  // -------------------------
+
+  buildUI() {
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+
+    this.button = document.createElement("button");
+    this.button.textContent = "🔥";
+    this.button.addEventListener("click", this._onClick);
+
+    this.container.appendChild(this.button);
   }
 }
 
