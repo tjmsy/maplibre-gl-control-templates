@@ -1,6 +1,6 @@
 import ButtonControlTemplate from './controls/BasicButtonControl.js';
 import TogglePanelControl from './controls/TogglePanelControl.js';
-import BottomSheet from './controls/BottomSheet.js';
+import BottomSheetControl from './controls/BottomSheetControl.js';
 
 const map = new maplibregl.Map({
   container: 'map',
@@ -11,4 +11,4 @@ const map = new maplibregl.Map({
 });
 map.addControl(new ButtonControlTemplate(), 'top-left');
 map.addControl(new TogglePanelControl(), 'top-left');
-map.addControl(new BottomSheet(), 'top-left');
+map.addControl(new BottomSheetControl(), 'top-left');
