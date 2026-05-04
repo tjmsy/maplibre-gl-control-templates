@@ -13,6 +13,8 @@ class TogglePanelControl {
     this.checkbox = null;
     this.okButton = null;
     this.clearButton = null;
+    this.radioGroup = null;
+    this.radioInputs = [];
 
     // bind
     this._onToggle = this._onToggle.bind(this);
@@ -71,10 +73,7 @@ class TogglePanelControl {
   _onDocumentClick(e) {
     if (!this.isOpen) return;
 
-    if (
-      this.container.contains(e.target) ||
-      this.panel.contains(e.target)
-    ) {
+    if (this.container.contains(e.target) || this.panel.contains(e.target)) {
       return;
     }
 
@@ -113,6 +112,7 @@ class TogglePanelControl {
       text: "",
       option: "",
       checked: false,
+      mode: null,
     });
   }
 
@@ -125,6 +125,7 @@ class TogglePanelControl {
       text: this.input.value,
       option: this.select.value,
       checked: this.checkbox.checked,
+      mode: this.radioInputs.find((r) => r.checked)?.value || null,
     };
   }
 
@@ -140,6 +141,12 @@ class TogglePanelControl {
     if (value.checked !== undefined) {
       this.checkbox.checked = value.checked;
     }
+
+    if (value.mode !== undefined) {
+      this.radioInputs.forEach((r) => {
+        r.checked = r.value === value.mode;
+      });
+    }
   }
 
   // -------------------------
@@ -154,6 +161,7 @@ class TogglePanelControl {
     this._createTextboxGroup();
     this._createSelect();
     this._createCheckbox();
+    this._createRadioGroup();
     this._createToolbar();
 
     this._assemble();
@@ -166,6 +174,7 @@ class TogglePanelControl {
     this.panel.appendChild(this.textboxGroup);
     this.panel.appendChild(this.select);
     this.panel.appendChild(this.checkboxGroup);
+    this.panel.appendChild(this.radioGroup);
     this.panel.appendChild(this.toolbar);
   }
 
@@ -246,6 +255,48 @@ class TogglePanelControl {
 
     this.checkboxGroup.appendChild(this.checkbox);
     this.checkboxGroup.append(" Checkbox");
+  }
+
+  _createRadioGroup() {
+    const OPTIONS = ["Mode A", "Mode B", "Mode C"];
+
+    this.radioGroup = document.createElement("div");
+
+    Object.assign(this.radioGroup.style, {
+      display: "flex",
+      flexDirection: "column",
+      gap: "4px",
+      marginTop: "8px",
+    });
+
+    this.radioInputs = [];
+
+    OPTIONS.forEach((opt, i) => {
+      const label = document.createElement("label");
+
+      Object.assign(label.style, {
+        display: "flex",
+        alignItems: "center",
+        gap: "4px",
+        cursor: "pointer",
+      });
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "toggle-panel-mode";
+      input.value = opt;
+
+      if (i === 0) input.checked = true;
+
+      const span = document.createElement("span");
+      span.textContent = opt;
+
+      label.appendChild(input);
+      label.appendChild(span);
+
+      this.radioGroup.appendChild(label);
+      this.radioInputs.push(input);
+    });
   }
 
   _createToolbar() {
